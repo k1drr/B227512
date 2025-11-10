@@ -38,6 +38,48 @@ ggplot(cars, aes(x = speed, y = dist)) +
   theme_minimal()
 ```
 
+```{r}
+# Load libraries
+
+library(tidyverse)
+library(lubridate)
+
+# Example URLs for May–July 2025
+urls <- c(
+  "https://www.opendata.nhs.scot/dataset/84393984-14e9-4b0d-a797-b288db64d088/resource/f02161c1-15f6-4d9f-8be5-01ba613d4303/download/hb_pitc2025_07.csv",
+  "https://www.opendata.nhs.scot/dataset/84393984-14e9-4b0d-a797-b288db64d088/resource/9de908b3-9c28-4cc3-aa32-72350a0579d1/download/hb_pitc2025_01_06.csv"
+)
+
+# Combine the files
+presc <- urls %>% map_dfr(read_csv)
+
+# Convert YYYYMM to date
+presc <- presc %>%
+  mutate(date = ymd(paste0(PaidDateMonth, "01")))
+
+names(presc)
+
+# Convert YYYYMM to proper date
+presc <- presc %>%
+  mutate(
+    date = ymd(paste0(PaidDateMonth, "01")))
+
+# Filter carbamazepine (using BNF code 030401 or similar)
+carbamazepine <- presc %>%
+  filter(str_detect(BNFItemDescription, regex("carbamazepine", ignore_case = TRUE))) %>%
+  group_by(date) %>%
+  summarise(total_items = sum(NumberOfPaidItems, na.rm = TRUE))
+
+# Simple time series plot
+ggplot(carbamazepine, aes(x = date, y = total_items)) +
+  geom_line(colour = "steelblue") +
+  labs(
+    title = "Monthly Carbamazepine Prescriptions in Scotland",
+    x = "Date",
+    y = "Number of Prescription Items"
+  ) +
+  theme_minimal()
+```
 
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
