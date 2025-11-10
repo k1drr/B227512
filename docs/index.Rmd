@@ -38,11 +38,32 @@ ggplot(cars, aes(x = speed, y = dist)) +
   theme_minimal()
 ```
 
+
+#title: "Formative Assessment – Data Science for Health and Biomedical Sciences"
+
+
+# 1) Topic / Focus
+
+#**Proposed Title:** Monthly Trends in Carbamazepine Prescriptions in Scotland  
+
+#**Focus:**  
+#This project explores prescribing patterns of *Carbamazepine*, a medication commonly used for epilepsy and neuropathic pain. Using NHS Scotland’s **Prescriptions in the Community** dataset, the goal is to investigate whether prescribing levels for this drug show any variation across months or regions, and later, to explore whether trends might relate to broader factors such as population size, health board, or prescribing policy changes.
+
+
+# 2) Initial Data Visualisation
+
+#**Figure 1 – First Exploration of Carbamazepine Prescriptions**
+
+#Below is an initial time-series plot showing total Carbamazepine prescriptions across several months in 2025.
+
+
+
 ```{r}
 # Load libraries
 
 library(tidyverse)
 library(lubridate)
+
 
 # Example URLs for May–July 2025
 urls <- c(
@@ -81,5 +102,14 @@ ggplot(carbamazepine, aes(x = date, y = total_items)) +
   theme_minimal()
 ```
 
+The visualisation above shows Carbamazepine prescriptions from January to July 2025. The number of paid prescription items fluctuates slightly between months (around 4,000–4,500), but there is no strong upward or downward trend. These modest changes are likely the result of routine prescribing cycles rather than seasonal effects. Because Carbamazepine is mainly used for long-term conditions such as epilepsy, consistent monthly figures are expected.
 
+Planned next steps:
+	•	Combine a full year (or more) of monthly data to reveal longer-term trends and possible seasonal variation.
+	•	Add regional grouping (HBT or Health Board) to identify any geographical differences in prescribing.
+	•	Normalise the data by local population size (e.g. prescriptions per 1,000 residents) for fair comparisons.
+	•	Consider comparing Carbamazepine with other epilepsy drugs to check if similar prescribing patterns occur.
+	•	Improve visualisation by adding colour, facets, and context (e.g. lockdown periods, policy changes).
+	
+	
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
