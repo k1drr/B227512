@@ -3,41 +3,23 @@ title: "Assessment"
 output: html_document
 ---
 
+
+
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE
+)
+
+
+library(tidyverse)
+library(lubridate)
+library(scales)
+library(knitr)
+
+theme_set(theme_minimal(base_size = 14))
 ```
-
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-
-```{r ggplot_cars, echo=FALSE}
-library(ggplot2)
-
-ggplot(cars, aes(x = speed, y = dist)) +
-  geom_point(colour = "blue") +
-  geom_smooth(method = "lm", se = FALSE, colour = "red") +
-  labs(title = "Speed vs Stopping Distance",
-       x = "Speed (mph)",
-       y = "Stopping Distance (ft)") +
-  theme_minimal()
-```
-
 
 #title: "Formative Assessment – Data Science for Health and Biomedical Sciences"
 
@@ -113,3 +95,210 @@ Planned next steps:
 	
 	
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r data_carbamazepine}
+
+## 2  Data import and wrangling for carbamazepine
+
+#Add a new chunk called `data_carbamazepine`.  
+#This keeps all your wrangling in one place and you can later move it into a script for full automation.
+
+# Board level files you are already using
+urls <- c(
+  "https://www.opendata.nhs.scot/dataset/84393984-14e9-4b0d-a797-b288db64d088/resource/f02161c1-15f6-4d9f-8be5-01ba613d4303/download/hb_pitc2025_07.csv",
+  "https://www.opendata.nhs.scot/dataset/84393984-14e9-4b0d-a797-b288db64d088/resource/9de908b3-9c28-4cc3-aa32-72350a0579d1/download/hb_pitc2025_01_06.csv"
+)
+
+presc_raw <- urls %>%
+  map_dfr(readr::read_csv)
+
+# Check names once so you can see the health board column name
+names(presc_raw)
+```
+
+Look for a column that is the health board label.  
+It is often called `HBName` or similar in Prescriptions in the Community data by board.  [oai_citation:0‡opendata.nhs.scot](https://www.opendata.nhs.scot/dataset/prescriptions-in-the-community?utm_source=chatgpt.com)  
+
+Now build a clean processed dataset.  
+Replace `HBName` below with whatever your board name column is if it is different.
+
+```{r wrangle_carbamazepine}
+presc <- presc_raw %>%
+  mutate(
+    date = ymd(paste0(PaidDateMonth, "01"))
+  )
+
+# Filter carbamazepine by name
+carb_all <- presc %>%
+  filter(str_detect(BNFItemDescription,
+                    regex("carbamazepine", ignore_case = TRUE)))
+
+# Scotland total by month
+carb_scot_month <- carb_all %>%
+  group_by(date) %>%
+  summarise(
+    total_items = sum(NumberOfPaidItems, na.rm = TRUE),
+    total_cost  = sum(GrossIngredientCost, na.rm = TRUE)
+  ) %>%
+  arrange(date)
+
+# Board level by month
+carb_board_month <- carb_all %>%
+  group_by(date, HBT) %>%   # change HBName if needed
+  summarise(
+    total_items = sum(NumberOfPaidItems, na.rm = TRUE),
+    total_cost  = sum(GrossIngredientCost, na.rm = TRUE)
+  ) %>%
+  ungroup()
+
+# Optional save for reproducibility and automation
+# dir.create("data_processed", showWarnings = FALSE)
+# readr::write_rds(carb_board_month, "data_processed/carbamazepine_board_month.rds")
+```
+
+Saving the processed file is a task that can be fully automated in a small script so you only need to run one command before knitting.
+
+---
+
+## 3  Figure 1  polished Scotland time trend
+
+Replace your simple plot with this more polished version.
+
+```r
+```{r fig_scotland_trend, fig.cap="Monthly carbamazepine prescribing items in Scotland in 2025"}
+ggplot(carb_scot_month, aes(x = date, y = total_items)) +
+  geom_line(linewidth = 1.2) +
+  geom_point(size = 2) +
+  geom_smooth(method = "loess", se = FALSE, linewidth = 0.7, linetype = "dashed") +
+  scale_x_date(date_labels = "%b", breaks = unique(carb_scot_month$date)) +
+  scale_y_continuous(labels = label_comma()) +
+  labs(
+    title = "Monthly carbamazepine prescriptions in Scotland",
+    subtitle = "Number of paid items in community prescribing, NHS Scotland 2025",
+    x = "Month",
+    y = "Number of prescription items"
+  ) +
+  theme(
+    plot.title = element_text(face = "bold"),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+
+Key message you can write under it  
+Carbamazepine prescribing in Scotland in 2025 shows noticeable month to month variation with a dip in the middle of the year and a rise again by July.
+
+---
+
+## 4  Figure 2  health board comparison over time
+
+This gives you a very nice small multiple plot that examiners like because it shows variation clearly.
+
+```r
+```{r fig_board_facets, fig.cap="Trends in carbamazepine prescribing by health board, 2025"}
+# For nicer facet ordering, compute mean items
+carb_board_summary <- carb_board_month %>%
+  group_by(HBT) %>%
+  mutate(
+    mean_items = mean(total_items, na.rm = TRUE)
+  ) %>%
+  ungroup() %>%
+  mutate(
+    HBT = fct_reorder(HBT, mean_items, .desc = TRUE)
+  )
+
+ggplot(carb_board_summary,
+       aes(x = date, y = total_items, group = HBT)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 0.8) +
+  scale_x_date(date_labels = "%b") +
+  scale_y_continuous(labels = label_comma()) +
+  labs(
+    title = "Carbamazepine prescribing by NHS board",
+    subtitle = "Number of paid items per month in 2025",
+    x = "Month",
+    y = "Number of prescription items"
+  ) +
+  facet_wrap(~ HBT, scales = "free_y") +
+  theme(
+    strip.text = element_text(face = "bold", size = 10),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+
+This can support a short paragraph about which boards are highest and how stable their prescribing looks.
+
+---
+
+## 5  Figure 3  heat map of boards and months
+
+Heat maps look visually strong and help you talk about patterns without extra clutter.
+
+
+```{r fig_heatmap, fig.cap="Heat map of carbamazepine prescribing by board and month, 2025"}
+ggplot(carb_board_month,
+       aes(x = date, y = fct_reorder(HBT, total_items, .fun = mean, .desc = TRUE))) +
+  geom_tile(aes(fill = total_items)) +
+  scale_x_date(date_labels = "%b") +
+  scale_fill_continuous(labels = label_comma()) +
+  labs(
+    title = "Heat map of carbamazepine prescribing",
+    subtitle = "Higher values in darker colour",
+    x = "Month",
+    y = "NHS board",
+    fill = "Items"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "right"
+  )
+```
+
+You can describe which boards are consistently high across months and whether any show sharp changes.
+
+---
+
+## 6  Table 1  top boards and cost per item
+
+Use `gt` to turn a tibble into a publication quality table.  
+This is neat and gets you credit for a good table.
+
+```r
+```{r table_top_boards, results="asis"}
+top_boards <- carb_board_month %>%
+  group_by(HBT) %>%
+  summarise(
+    mean_items = mean(total_items, na.rm = TRUE),
+    mean_cost  = mean(total_cost,  na.rm = TRUE),
+    cost_per_item = mean_cost / mean_items
+  ) %>%
+  arrange(desc(mean_items)) %>%
+  slice_head(n = 10)
+
+top_boards %>%
+  mutate(
+    mean_items = round(mean_items),
+    mean_cost = round(mean_cost, 2),
+    cost_per_item = round(cost_per_item, 2)
+  ) %>%
+ kable(
+  top_boards,
+  caption = "Top ten NHS boards for carbamazepine prescribing in 2025, average monthly items and costs"
+)
+  
+```
+
+Under the table you can write one sentence about which boards have the largest carbamazepine use and how cost per item varies.
+
+---
+
+## 7  Next upgrades when you are ready
+
+Once these basics are working, the next nice steps are  
+
+- bring in SIMD 2020v2 using the Scottish government lookup file so you can compare boards by deprivation profile  [oai_citation:1‡Scottish Government](https://www.gov.scot/collections/scottish-index-of-multiple-deprivation-2020/?utm_source=chatgpt.com)  
+- join board level prescribing with SIMD quintiles or with data zone level SIMD linked through health board codes  
+- add population denominators for proper rates which you can take from Public Health Scotland or National Records of Scotland  
+
+All of those can be scripted in one small wrangling file that you source at the top of the Rmd which is exactly the kind of automation examiners like to see.
+
+If you paste this code in and tell me what errors you get if any, I can help you tweak it for your specific column names.
