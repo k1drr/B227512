@@ -158,13 +158,11 @@ carb_board_month <- carb_all %>%
 
 Saving the processed file is a task that can be fully automated in a small script so you only need to run one command before knitting.
 
----
 
 ## 3  Figure 1  polished Scotland time trend
 
 Replace your simple plot with this more polished version.
 
-```r
 ```{r fig_scotland_trend, fig.cap="Monthly carbamazepine prescribing items in Scotland in 2025"}
 ggplot(carb_scot_month, aes(x = date, y = total_items)) +
   geom_line(linewidth = 1.2) +
@@ -187,13 +185,11 @@ ggplot(carb_scot_month, aes(x = date, y = total_items)) +
 Key message you can write under it  
 Carbamazepine prescribing in Scotland in 2025 shows noticeable month to month variation with a dip in the middle of the year and a rise again by July.
 
----
 
 ## 4  Figure 2  health board comparison over time
 
 This gives you a very nice small multiple plot that examiners like because it shows variation clearly.
 
-```r
 ```{r fig_board_facets, fig.cap="Trends in carbamazepine prescribing by health board, 2025"}
 # For nicer facet ordering, compute mean items
 carb_board_summary <- carb_board_month %>%
@@ -227,7 +223,6 @@ ggplot(carb_board_summary,
 
 This can support a short paragraph about which boards are highest and how stable their prescribing looks.
 
----
 
 ## 5  Figure 3  heat map of boards and months
 
@@ -255,35 +250,33 @@ ggplot(carb_board_month,
 
 You can describe which boards are consistently high across months and whether any show sharp changes.
 
----
 
 ## 6  Table 1  top boards and cost per item
 
 Use `gt` to turn a tibble into a publication quality table.  
 This is neat and gets you credit for a good table.
 
-```r
-```{r table_top_boards, results="asis"}
+```{r table_top_boards}
 top_boards <- carb_board_month %>%
-  group_by(HBT) %>%
-  summarise(
+  dplyr::group_by(HBT) %>%
+  dplyr::summarise(
     mean_items = mean(total_items, na.rm = TRUE),
     mean_cost  = mean(total_cost,  na.rm = TRUE),
     cost_per_item = mean_cost / mean_items
   ) %>%
-  arrange(desc(mean_items)) %>%
-  slice_head(n = 10)
+  dplyr::arrange(dplyr::desc(mean_items)) %>%
+  dplyr::slice_head(n = 10)
 
 top_boards %>%
-  mutate(
+  dplyr::mutate(
     mean_items = round(mean_items),
     mean_cost = round(mean_cost, 2),
     cost_per_item = round(cost_per_item, 2)
   ) %>%
- kable(
-  top_boards,
-  caption = "Top ten NHS boards for carbamazepine prescribing in 2025, average monthly items and costs"
-)
+  knitr::kable(
+    caption = "Top ten NHS boards for carbamazepine prescribing in 2025, average monthly items and costs",
+    digits = 2
+  )
   
 ```
 
