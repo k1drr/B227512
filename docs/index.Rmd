@@ -118,6 +118,9 @@ if (file.exists(simd_path)) {
 ## Scotland level prescribing
 
 ```{r}
+# Add a reference line at the mean monthly volume to help interpret variation
+mean_scot_items <- mean(carb_scot_month$total_items, na.rm = TRUE)
+
 ggplot(carb_scot_month, aes(x = date, y = total_items)) +
   geom_line(linewidth = 1.2) +
   geom_point(size = 2) +
@@ -126,6 +129,10 @@ ggplot(carb_scot_month, aes(x = date, y = total_items)) +
     se = FALSE,
     linewidth = 0.7,
     linetype = "dashed"
+  ) +
+  geom_hline(
+    yintercept = mean_scot_items,
+    linetype = "dotted"
   ) +
   scale_x_date(
     date_labels = "%b",
