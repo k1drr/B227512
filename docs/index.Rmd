@@ -1,6 +1,8 @@
 ---
 title: "Assessment"
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -21,11 +23,11 @@ theme_set(theme_minimal(base_size = 14))
 
 # Introduction
 
-Epilepsy is a common long term neurological condition in Scotland and it can have a major impact on daily life. It is linked to unplanned hospital use, loss of independence and higher risk of early death. Effective and fair access to treatment is therefore an important public health goal.
+Epilepsy is a common long term neurological condition in Scotland and it can have a major impact on daily life. It is linked to unplanned hospital use, loss of independence and higher risk of early death (Public Health Scotland). Effective and fair access to treatment is therefore an important public health goal.
 
-Carbamazepine is an older antiepileptic medicine that is still widely used. It is prescribed mainly in primary care to control seizures and is also used for some forms of nerve pain. Because most prescriptions are written in the community, national prescribing data provide a practical way to describe how much carbamazepine is used and how this varies across Scotland.
+Carbamazepine is an older antiepileptic medicine that is still widely used. It is prescribed mainly in primary care to control seizures and is also used for some forms of nerve pain.(Maan JS, Duong TvH and Saadabadi A., 2023) Because most prescriptions are written in the community, national prescribing data provide a practical way to describe how much carbamazepine is used and how this varies across Scotland.
 
-In this report I use Public Health Scotland Prescriptions in the Community data to describe recent carbamazepine prescribing in NHS Scotland. The main question is how the number of carbamazepine prescription items changes by month and how prescribing volume differs between health boards. I also set up the data so that it can be linked to the Scottish Index of Multiple Deprivation for future work on inequality. I expect national volumes to be fairly stable over time, with higher absolute counts in larger boards and a possible association between higher deprivation and higher prescribing volume.
+In this report I use Public Health Scotland Prescriptions in the Community data to describe recent carbamazepine prescribing in NHS Scotland. The main question is how the number of carbamazepine prescription items changes by month and how prescribing volume differs between health boards. I also set up the data so that it can be linked to the Scottish Index of Multiple Deprivation for future work on inequality (Scottish Government SIMD 2020). I expect national volumes to be fairly stable over time, with higher absolute counts in larger boards and a possible association between higher deprivation and higher prescribing volume.
 
 # Data and methods
 
@@ -254,6 +256,8 @@ Using Public Health Scotland prescribing data, this report describes how carbama
 
 # References
 
-- Reference for epilepsy burden in Scotland or UK  
-- Reference or guideline for carbamazepine use in epilepsy  
-- Scottish Government SIMD 2020 documentation  
+Maan, J.S., Duong, T.v.H. and Saadabadi, A. (2023) Carbamazepine. In: StatPearls [Internet]. Treasure Island (FL): StatPearls Publishing. Available at: https://www.ncbi.nlm.nih.gov/books/NBK482455/ (Accessed: 27 November 2025).
+
+Public Health Scotland, Epilepsy: key points. (n.d.). Available at: https://www.scotpho.org.uk/health-conditions/epilepsy/introduction/ (Accessed: 27 November 2025).
+
+Scottish Government (n.d.) Scottish Index of Multiple Deprivation 2020. Available at: https://www.gov.scot/collections/scottish-index-of-multiple-deprivation-2020/ (Accessed: 27 November 2025).
