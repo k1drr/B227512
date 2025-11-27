@@ -48,4 +48,7 @@ rsconnect/
 #data folder
 data/
 
-.DS_Storedata_raw/SIMD2020v2_datazone_lookup.csv
+#csv data
+data_raw/SIMD2020v2_datazone_lookup.csv
+
+.DS_Store
