@@ -355,54 +355,57 @@ display: none;
 
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>Epilepsy is a common long term neurological condition in Scotland and
-it can have a major impact on daily life. It is linked to unplanned
-hospital use, loss of independence and higher risk of early death
-(Public Health Scotland). Effective and fair access to treatment is
-therefore an important public health goal.</p>
-<p>Carbamazepine is an older antiepileptic medicine that is still widely
-used. It is prescribed mainly in primary care to control seizures and is
-also used for some forms of nerve pain.(Maan JS, Duong TvH and Saadabadi
-A., 2023) Because most prescriptions are written in the community,
-national prescribing data provide a practical way to describe how much
-carbamazepine is used and how this varies across Scotland.</p>
-<p>In this report I use Public Health Scotland Prescriptions in the
-Community data to describe recent carbamazepine prescribing in NHS
-Scotland. The main question is how the number of carbamazepine
-prescription items changes by month and how prescribing volume differs
-between health boards. I also set up the data so that it can be linked
-to the Scottish Index of Multiple Deprivation for future work on
-inequality (Scottish Government SIMD 2020). I expect national volumes to
-be fairly stable over time, with higher absolute counts in larger boards
-and a possible association between higher deprivation and higher
-prescribing volume.</p>
+<p>In Scotland, epilepsy is a prevalent long-term neurological condition
+that can significantly affect day-to-day functioning. Unplanned hospital
+stays, loss of independence, and an increased risk of dying young are
+all associated with it (Public Health Scotland). Thus, ensuring
+equitable and efficient access to treatment is a crucial public health
+objective.</p>
+<p>An older antiepileptic medication that is still commonly used is
+carbamazepine. It is used to treat certain types of nerve pain and is
+primarily prescribed in primary care to manage seizures.(Maan JS,
+Saadabadi A, and Duong TvH, 2023) National prescribing data offer a
+useful method of describing the amount of carbamazepine used and how it
+varies throughout Scotland because the majority of prescriptions are
+written in the community.</p>
+<p>In this report, I describe recent carbamazepine prescriptions in NHS
+Scotland using data from Public Health Scotland Prescriptions in the
+Community. The primary questions are how prescribing volume varies
+between health boards and how the number of carbamazepine prescription
+items varies monthly. Additionally, I prepared the data for future
+research on inequality by linking it to the Scottish Index of Multiple
+Deprivation (Scottish Government SIMD 2020). I anticipate that national
+volumes will remain relatively stable over time, with higher absolute
+counts in larger boards and a potential correlation between higher
+deprivation and higher prescribing volume.</p>
 </div>
 <div id="data-and-methods" class="section level1">
 <h1>Data and methods</h1>
-<p>The analysis uses open prescribing data from Public Health Scotland
-that cover all NHS prescriptions dispensed in the community in Scotland.
-I selected the board level files for the first seven months of the year
-and combined them into one dataset. A date variable was created from the
-payment month and the data were restricted to rows where the British
-National Formulary item description contains the word carbamazepine.
-This captures generic and branded forms of the drug that are commonly
-used for epilepsy and related conditions.</p>
-<p>For each month I summed the number of paid items and the gross
-ingredient cost across Scotland and then for each health board. This
-produced one table with national totals by month and one table with
-health board totals by month. All wrangling and summaries were carried
-out in R using tidyverse and lubridate. The steps are written as one
-pipeline that could be run from a separate script, which supports
-reproducibility and would allow the data preparation to be automated
-before knitting the report.</p>
-<p>To prepare for inequality analysis I also used the SIMD twenty twenty
-data zone lookup. Data zones were grouped to health board level and I
-calculated the proportion of zones in the most deprived and least
-deprived national quintiles for each board. This summary was joined to
-the carbamazepine prescribing table using the health board code so that
-each board month record has basic deprivation information attached. In
-this report that deprivation information is mainly used to enrich the
-dataset so that future work on inequality can build on it.</p>
+<p>Public Health Scotland’s open prescribing data, which includes all
+NHS prescriptions written in Scotland’s communities, is used in the
+analysis. I created a single dataset by combining the board level files
+for the first seven months of the year. The payment month was used to
+create a date variable, and the data were limited to rows where the word
+“carbamazepine” appeared in the item description of the British National
+Formulary. This includes both branded and generic versions of the
+medication that are frequently used to treat epilepsy and associated
+disorders.</p>
+<p>I totalled the gross ingredient cost and the number of paid items for
+each month throughout Scotland, then for each health board. One table
+with national totals by month and another with health board totals by
+month were created as a result. Tidyverse and Lubridate were used in R
+for all wrangling and summaries. The steps are written as a single
+pipeline that can be executed from a different script, supporting
+reproducibility and enabling automated data preparation prior to report
+knitting.</p>
+<p>To prepare for the analysis of inequality The SIMD 200 data zone
+lookup was another tool I used. I determined the percentage of each
+health board’s data zones that fell into the most and least deprived
+national quintiles. In order to add basic deprivation information to
+each board month record, this summary was linked to the carbamazepine
+prescribing table using the health board code. The primary purpose of
+the deprivation information in this report is to enhance the dataset so
+that further research on inequality can build upon it.</p>
 </div>
 <div id="board-level-files-for-early-2025" class="section level1">
 <h1>Board level files for early 2025</h1>
@@ -708,15 +711,15 @@ carbamazepine products across boards.</p>
 </div>
 <div id="discussion" class="section level1">
 <h1>Discussion</h1>
-<p>This descriptive analysis uses routine Community Prescriptions data
-to give an overview of carbamazepine use in NHS Scotland. At national
-level the volume of carbamazepine items appears stable over the first
-seven months of the year, with only modest month to month fluctuation.
-This matches the expectation for a medicine used mainly in long term
-maintenance treatment. Between boards there is substantial variation in
-absolute volume, which is also expected because prescribing reflects the
-size and structure of local populations as well as clinical
-practice.</p>
+<p>This descriptive analysis provides an overview of carbamazepine use
+in NHS Scotland using routine Community Prescriptions data. Over the
+first seven months of the year, the volume of carbamazepine items
+appears to be stable at the national level, with only slight monthly
+fluctuations. This is consistent with what is expected for a medication
+that is primarily used for long-term maintenance. Absolute volume varies
+significantly between boards, which is to be expected given that
+prescribing reflects both clinical practice and the size and composition
+of local populations.</p>
 <p>By linking prescribing data to SIMD based measures it becomes
 possible to examine how carbamazepine prescribing is distributed across
 more and less deprived areas. The scatter plot relates mean items per
@@ -741,15 +744,15 @@ histograms, once appropriate data are available.</p>
 </div>
 <div id="conclusion" class="section level1">
 <h1>Conclusion</h1>
-<p>Using Public Health Scotland prescribing data, this report describes
-how carbamazepine use in the community varies over time and between
-health boards in Scotland. National volumes are broadly stable over the
-period studied, while absolute prescribing levels differ clearly between
-boards. The work also shows that prescribing data can be linked to SIMD
-information and summarised at board level. With additional time points,
-population denominators and demographic detail, the same pipeline could
-support stronger assessments of inequality and quality in epilepsy
-treatment across Scotland.</p>
+<p>This report explains how carbamazepine use in the community varies
+over time and between health boards in Scotland using prescribing data
+from Public Health Scotland. While absolute prescribing levels clearly
+vary between boards, national volumes are generally stable over the
+period under study. Additionally, the work demonstrates that prescribing
+data can be summarised at the board level and connected to SIMD data.
+Stronger evaluations of inequality and quality in epilepsy treatment
+throughout Scotland could be supported by the same pipeline with more
+time points, population denominators, and demographic information.</p>
 </div>
 <div id="references" class="section level1">
 <h1>References</h1>
